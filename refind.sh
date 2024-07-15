@@ -85,9 +85,13 @@ myfind() {
 }
 
 # Function for myfullcat
-myfullcat() {
+cleanup() {
   id="-${1}"
 
+  # Function for clursor cleanup
+  tput cnorm
+  
+  # Fully concatenate everything...1
   echo
   echo
   echo -e "${BLUE}STDIN:${NC}"
@@ -96,25 +100,14 @@ myfullcat() {
   echo -e "${GREEN}STDOUT:${NC} $(wc -l < ~/output${id}.log) lines"
   cat ~/output${id}.log
   echo
-  echo
   echo -e "${RED}STDERR:${NC} $(wc -l < ~/error${id}.log) lines"
   cat ~/error${id}.log
-  echo
-}
 
-# Function for cleanup
-cleanup() {
-  tput cnorm
-  myfullcat "$unique_id"
-  rmlogs
+  # Function for rmlogs
+  rm -f ~/input$id.log
+  rm -f ~/output$id.log
+  rm -f ~/error$id.log
   exit
-}
-
-# Function for rmlogs
-rmlogs() {
-  rm -rf ~/input-*.log
-  rm -rf ~/output-*.log
-  rm -rf ~/error-*.log
 }
 
 # Generate a unique ID
@@ -125,10 +118,16 @@ tput civis
 
 # Ensure the cursor is shown again on script exit
 trap 'tput cnorm; exit' INT TERM
-trap 'cleanup' EXIT
+trap 'cleanup ${unique_id}' EXIT
 
 # Get the number of rows in the terminal
 rows=$(tput lines)
+
+# Clear the screen with newlines
+for ((i=1; i<=rows; i++))
+do
+    echo ""
+done
 
 # Calculate the number of rows available for output
 output_rows=$((rows - 5))
@@ -139,10 +138,10 @@ search_dir="${2:-.}"
 # Run the find script in the background with the search term, directory, and unique ID
 myfind "$1" "$search_dir" "$unique_id" &
 
-while true; do
-  clear
+find_pid=$!
 
-  # Clear the top part of the screen and run mycat with the unique ID
+while kill -0 $find_pid 2> /dev/null; do
+  # Start at the top part of the screen and run mycat with the unique ID
   tput cup 0 0
   tput el
   total_lines=$(wc -l < ~/output-$unique_id.log)

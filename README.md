@@ -39,3 +39,5 @@ This will search for vc_red.msi in the current directory.
 This script searches for files matching the SEARCH_TERM in the specified DIRECTORY (or current directory if not specified). It displays the search progress and results in a color-coded format. On script exit, it shows detailed results and cleans up temporary log files.
 
 [MIT License](LICENSE)
+
+v0.0.1721025542
