@@ -17,8 +17,8 @@ This will copy the script to `/usr/local/bin` and make it executable.
 ```sh
 refind [SEARCH_TERM] [DIRECTORY]
 ```
-- SEARCH_TERM: The term to search for using the find command.
-- [DIRECTORY]: The directory to search in (optional, default is current directory).
+- `SEARCH_TERM`: The term to search for using the find command.
+- `[DIRECTORY]`: The directory to search in (optional, default is current directory).
 
 ## Examples
 
